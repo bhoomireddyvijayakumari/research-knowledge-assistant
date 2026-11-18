@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "research-knowledge-assistant"
+version = "0.1.0"
+description = "A multi-document research assistant using LangChain, MCP, ChromaDB and OpenAI"
+requires-python = ">=3.11"
+dependencies = [
+  "langchain>=1.0,<2.0",
+  "langchain-openai>=1.0,<2.0",
+  "langchain-chroma>=1.0,<2.0",
+  "langchain-text-splitters>=1.0,<2.0",
+  "langchain-community>=0.4,<1.0",
+  "mcp>=1.0,<2.0",
+  "pydantic>=2.7,<3.0",
+  "python-dotenv>=1.0,<2.0",
+  "pypdf>=5.0,<7.0",
+  "flashrank>=0.2.9",
+  "streamlit>=1.40,<2.0",
+  "rank-bm25>=0.2.2,<1.0"
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8.0,<9.0", "ruff>=0.8,<1.0"]
+
+[project.scripts]
+research-assistant = "research_assistant.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["research_assistant*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
