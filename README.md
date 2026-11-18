@@ -386,41 +386,7 @@ The user refers to the previously discussed scaled dot-product attention mechani
 
 ---
 
-## Future Improvements
 
-Potential extensions include:
 
-- Add OCR support for scanned research papers.
-- Add document-level filters and metadata-based retrieval.
-- Improve evaluation using a curated question-and-answer dataset.
-- Add retrieval quality metrics and benchmarking.
-- Support additional embedding and language models.
-- Add authentication and multi-user support.
-- Containerize the application using Docker.
-- Deploy the application to AWS using ECS and a CI/CD pipeline.
 
-These are possible future enhancements, not claims about currently implemented functionality.
-
----
-
-## Learning Outcomes
-
-This project provides practical experience with:
-
-- Building LLM-powered applications using Python.
-- Working with LangChain agents and tool calling.
-- Understanding the Model Context Protocol (MCP).
-- Implementing PDF ingestion and document processing.
-- Building a vector-based knowledge base using ChromaDB.
-- Combining semantic and keyword search through hybrid retrieval.
-- Applying Reciprocal Rank Fusion and neural reranking.
-- Implementing persistent conversational memory using SQLite.
-- Building interactive applications using Streamlit.
-- Structuring, testing, and documenting a modular Python project.
-
----
-
-## License
-
-Choose and add an appropriate open-source license before distributing the project. No license is specified by this README.
 
