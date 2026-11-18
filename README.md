@@ -1,10 +1,10 @@
-from pathlib import Path
+# AI Research & Knowledge Assistant
 
-readme = r'''# AI Research & Knowledge Assistant
+An AI-powered research assistant that lets you upload multiple research PDFs, retrieve relevant passages, and ask questions across your document collection.
 
-An AI-powered research assistant that lets you upload multiple research PDFs, retrieve relevant passages, and ask questions across your document collection. The application combines **hybrid retrieval, FlashRank reranking, LangChain agent orchestration, Model Context Protocol (MCP), ChromaDB, SQLite, and Streamlit**.
+The application combines **hybrid retrieval, FlashRank reranking, LangChain agent orchestration, Model Context Protocol (MCP), ChromaDB, SQLite, and Streamlit**.
 
-It also supports **conversation history and context-aware follow-up questions**, so you can ask questions such as “How does that differ from the method in the other paper?” without repeating the entire context.
+It also supports **conversation history and context-aware follow-up questions**, so you can ask questions such as "How does that differ from the method in the other paper?" without repeating the entire context.
 
 > **Project type:** Local AI engineering / portfolio project  
 > **Status:** Core workflow implemented and tested locally  
@@ -19,19 +19,21 @@ It also supports **conversation history and context-aware follow-up questions**,
 - **Vector search:** Generate embeddings with OpenAI and store them persistently in ChromaDB.
 - **Hybrid retrieval:** Combine semantic vector retrieval with BM25 keyword retrieval.
 - **Reciprocal Rank Fusion (RRF):** Combine the ranked results from the semantic and keyword retrieval paths.
-- **Neural reranking:** Use FlashRank (`ms-marco-TinyBERT-L-2-v2`) to rerank the candidate passages for the user's query.
+- **Neural reranking:** Use FlashRank (`ms-marco-TinyBERT-L-2-v2`) to rerank candidate passages for the user's query.
 - **Agentic question answering:** Use a LangChain agent to decide when to call knowledge-base tools.
 - **MCP integration:** Expose knowledge-base search and indexed-document listing through an MCP server using stdio transport.
-- **Evidence-oriented answers:** Ask the agent to ground responses in retrieved passages and identify source documents and page numbers.
+- **Evidence-oriented answers:** Ground responses in retrieved passages and identify source documents and page numbers.
 - **Conversational memory:** Save user and assistant messages in SQLite and include recent messages when answering follow-up questions.
 - **Multiple conversations:** Start a new research conversation and switch between saved conversations in the Streamlit interface.
 - **Two ways to interact:** Use the Streamlit interface or the command-line interface (CLI).
+
+---
 
 ## Technology Stack
 
 | Area | Technology |
 |---|---|
-| Language | Python |
+| Programming language | Python |
 | LLM and embeddings | OpenAI API |
 | Agent orchestration | LangChain / LangGraph agent |
 | Tool interoperability | Model Context Protocol (MCP), Python SDK |
@@ -47,6 +49,8 @@ It also supports **conversation history and context-aware follow-up questions**,
 ---
 
 ## Architecture
+
+The application follows a modular architecture that separates document ingestion, retrieval, agent orchestration, tool communication, and conversation persistence.
 
 ```mermaid
 flowchart TD
@@ -66,18 +70,19 @@ flowchart TD
     AGENT --> LLM[OpenAI chat model]
     AGENT --> MCP[MCP client]
     MCP --> SERVER[MCP stdio server]
+
     SERVER --> HYBRID[Hybrid retrieval]
     HYBRID --> VECTOR[Chroma semantic search]
     HYBRID --> BM25[BM25 keyword search]
     VECTOR --> FUSION[Reciprocal Rank Fusion]
     BM25 --> FUSION
     FUSION --> RERANK[FlashRank reranker]
-    RERANK --> CHROMA
-    SERVER --> SQLITE
     RERANK --> AGENT
 
+    SERVER --> SQLITE
     AGENT --> HISTORY[Conversation context]
     HISTORY --> SQLITE
+
     AGENT --> ANSWER[Grounded response with source references]
     ANSWER --> UI
     ANSWER --> CLI
@@ -93,7 +98,7 @@ flowchart TD
 6. The retrieval pipeline obtains semantic and BM25 keyword results.
 7. Reciprocal Rank Fusion combines the result rankings.
 8. FlashRank reranks the candidate passages for the current query.
-9. The agent uses the retrieved evidence and recent conversation messages to prepare an answer.
+9. The agent uses retrieved evidence and recent conversation messages to prepare an answer.
 10. The question and answer are persisted in SQLite for later conversation-history display.
 
 ---
@@ -102,6 +107,7 @@ flowchart TD
 
 ```text
 research-knowledge-assistant/
+│
 ├── research_assistant/
 │   ├── __init__.py
 │   ├── agent.py             # LangChain agent and MCP client integration
@@ -111,120 +117,57 @@ research-knowledge-assistant/
 │   ├── ingest.py            # PDF extraction, chunking and indexing
 │   ├── mcp_server.py        # MCP tools exposed to the agent
 │   └── retrieval.py         # Hybrid retrieval, RRF and FlashRank reranking
+│
 ├── tests/
 │   ├── test_cli.py
 │   └── test_db.py
-├── data/
-│   ├── documents/           # Local PDF input directory
-│   └── chroma/              # Persistent vector store (generated locally)
-├── reports/
+│
+├── screenshots/
+│   ├── dashboard.png
+│   ├── documents.png
+│   ├── conversational_memory_01.png
+│   ├── conversational_memory_02.png
+│   └── conversational_memory_03.png
+│
+├── data/                    # Local document and vector database storage
+│
 ├── app.py                   # Streamlit application
-├── .env.example
+├── .env.example             # Environment variable template
 ├── .gitignore
 ├── pyproject.toml
 ├── requirements.txt
 └── README.md
 ```
 
-Generated data, local databases, API credentials, and virtual environments should remain out of version control. Check `.gitignore` before publishing the repository.
+Generated data, local databases, API credentials, research documents, and virtual environments should remain out of version control. Check `.gitignore` before publishing the repository.
 
 ---
 
 ## Prerequisites
+
+Before installing the application, ensure you have:
 
 - Python 3.11 or 3.12.
 - An OpenAI API key with access to the configured chat and embedding models.
 - Internet connectivity for OpenAI API requests and initial model downloads.
 - macOS, Linux, or Windows.
 
-## Installation and Setup
-
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/<your-username>/research-knowledge-assistant.git
-cd research-knowledge-assistant
-```
-
-Replace `<your-username>` with your GitHub username and use your actual repository URL.
-
-### 2. Create a Virtual Environment
-
-**macOS / Linux**
-
-```bash
-python3 -m venv .venv
-source .venv/bin/activate
-```
-
-**Windows PowerShell**
-
-```powershell
-py -3.11 -m venv .venv
-.venv\Scripts\Activate.ps1
-```
-
-### 3. Install Dependencies
-
-```bash
-python -m pip install --upgrade pip
-python -m pip install -e ".[dev]"
-```
-
-If you prefer installing from `requirements.txt`:
-
-```bash
-python -m pip install -r requirements.txt
-python -m pip install -e .
-```
-
-### 4. Configure Environment Variables
-
-Create your local environment file:
-
-```bash
-cp .env.example .env
-```
-
-On Windows PowerShell:
-
-```powershell
-Copy-Item .env.example .env
-```
-
-Add your API key and model configuration to `.env`:
-
-```env
-OPENAI_API_KEY=your_openai_api_key
-OPENAI_MODEL=gpt-4o-mini
-OPENAI_EMBEDDING_MODEL=text-embedding-3-small
-```
-
-Use the variable names and defaults expected by your checked-out `config.py` and `.env.example` if they differ.
-
-**Security:** Never commit `.env`, expose API keys in screenshots, or hard-code credentials in Python files.
-
-### 5. Initialize the Application
-
-```bash
-research-assistant init
-```
-
-If the CLI command is not available, confirm that the virtual environment is active and the package was installed with `python -m pip install -e .`.
-
 ---
+
 
 ## Running the Application
 
+The application supports two interaction methods: a Streamlit graphical interface and a command-line interface.
+
 ### Option A: Streamlit Interface
 
-On macOS, Linux, or Windows:
+Run:
 
 ```bash
 python -m streamlit run app.py
 ```
 
-On the development machine where the project was tested, the explicit virtual-environment interpreter can be used:
+On the development machine where the project was tested, the explicit virtual-environment interpreter can also be used:
 
 ```bash
 ./.venv/bin/python -m streamlit run app.py
@@ -250,39 +193,41 @@ Conversation messages are stored in SQLite and loaded when a conversation is sel
 
 ### Option B: Command-Line Interface
 
-Ingest all PDFs from the configured documents directory:
+**Ingest all PDFs from the configured documents directory:**
 
 ```bash
 research-assistant ingest
 ```
 
-Ingest one PDF:
+**Ingest one PDF:**
 
 ```bash
 research-assistant ingest "/absolute/path/to/research-paper.pdf"
 ```
 
-List indexed documents:
+**List indexed documents:**
 
 ```bash
 research-assistant list
 ```
 
-Ask a question:
+**Ask a question:**
 
 ```bash
 research-assistant ask "Summarize the main contribution of the indexed papers."
 ```
 
-More example questions:
+**More example questions:**
 
 ```bash
 research-assistant ask "Compare the methods used in the indexed papers."
+
 research-assistant ask "What limitations are discussed in these papers?"
+
 research-assistant ask "Which paper describes the multi-guide mechanism?"
 ```
 
-View recent research history:
+**View recent research history:**
 
 ```bash
 research-assistant history --limit 10
@@ -302,19 +247,27 @@ The retrieval module uses a multi-stage approach rather than relying only on vec
 
 ### 1. Semantic Retrieval
 
-The user's query is embedded and compared with document chunk embeddings stored in ChromaDB. This helps retrieve passages that are conceptually related even when they do not use exactly the same words as the query.
+The user's query is embedded and compared with document chunk embeddings stored in ChromaDB.
+
+This helps retrieve passages that are conceptually related even when they do not use exactly the same words as the query.
 
 ### 2. Keyword Retrieval with BM25
 
-BM25 ranks passages based on lexical overlap with the query. It can help when a question contains specific terminology, acronyms, algorithm names, or technical phrases.
+BM25 ranks passages based on lexical overlap with the query.
+
+It can help when a question contains specific terminology, acronyms, algorithm names, or technical phrases.
 
 ### 3. Reciprocal Rank Fusion
 
-The semantic and keyword result lists are combined using Reciprocal Rank Fusion (RRF). RRF uses the relative ranking of a result in each retrieval list to produce a combined ranking.
+The semantic and keyword result lists are combined using Reciprocal Rank Fusion (RRF).
+
+RRF uses the relative ranking of a result in each retrieval list to produce a combined ranking.
 
 ### 4. FlashRank Reranking
 
-A candidate set from the fused results is passed to FlashRank. The reranker evaluates query-passage relevance and returns a reordered list of passages.
+A candidate set from the fused results is passed to FlashRank.
+
+The reranker evaluates query-passage relevance and returns a reordered list of passages.
 
 ### Why Combine These Stages?
 
@@ -336,7 +289,9 @@ The local MCP server exposes tools that the LangChain agent can call:
 | `search_knowledge_base(query, k)` | Retrieve relevant passages from the indexed knowledge base. |
 | `list_indexed_documents()` | List documents available in the local index. |
 
-The agent connects to the MCP server through stdio transport. This is a local development arrangement; it is not an authenticated public MCP service.
+The agent connects to the MCP server through stdio transport.
+
+This is a local development arrangement; it is not an authenticated public MCP service.
 
 ---
 
@@ -351,7 +306,9 @@ The database stores:
 - User messages.
 - Assistant responses.
 
-When a user asks a follow-up question, recent messages from that conversation are loaded and supplied as context to the agent. This supports follow-ups that refer to earlier discussion.
+When a user asks a follow-up question, recent messages from that conversation are loaded and supplied as context to the agent.
+
+This supports follow-ups that refer to earlier discussion.
 
 Conversation memory is scoped by conversation ID. Starting a new conversation creates a separate context rather than reusing the previous conversation's message history.
 
@@ -365,9 +322,11 @@ Run the available automated tests:
 python -m pytest -v
 ```
 
-The repository's included tests cover the components represented in the `tests/` directory. They do not necessarily exercise every live integration, such as OpenAI API calls, embedding generation, ChromaDB retrieval, FlashRank, MCP communication, or the full Streamlit workflow.
+The repository's included tests cover the components represented in the `tests/` directory.
 
-For a practical end-to-end check:
+They do not necessarily exercise every live integration, such as OpenAI API calls, embedding generation, ChromaDB retrieval, FlashRank, MCP communication, or the full Streamlit workflow.
+
+### Practical End-to-End Check
 
 1. Configure a valid API key.
 2. Start the application.
@@ -415,10 +374,53 @@ The user refers to the previously discussed scaled dot-product attention mechani
 
 ---
 
+## Limitations
 
+- The application requires a valid OpenAI API key for model and embedding requests.
+- Initial model downloads for reranking require internet connectivity.
+- PDF extraction quality depends on the structure and readability of the source documents.
+- Scanned PDFs may require OCR support, which is not described as an implemented feature here.
+- Retrieval quality depends on chunking, embeddings, ranking, and the available document collection.
+- Answers should be verified against original research papers before being used in academic or professional work.
+- The MCP server is configured for local stdio communication rather than public authenticated access.
 
+---
 
+## Future Improvements
 
-out = Path("/mnt/data/README.md")
-out.write_text(readme, encoding="utf-8")
-print(f"Created {out} ({len(readme.splitlines())} lines)")
+Potential extensions include:
+
+- Add OCR support for scanned research papers.
+- Add document-level filters and metadata-based retrieval.
+- Improve evaluation using a curated question-and-answer dataset.
+- Add retrieval quality metrics and benchmarking.
+- Support additional embedding and language models.
+- Add authentication and multi-user support.
+- Containerize the application using Docker.
+- Deploy the application to AWS using ECS and a CI/CD pipeline.
+
+These are possible future enhancements, not claims about currently implemented functionality.
+
+---
+
+## Learning Outcomes
+
+This project provides practical experience with:
+
+- Building LLM-powered applications using Python.
+- Working with LangChain agents and tool calling.
+- Understanding the Model Context Protocol (MCP).
+- Implementing PDF ingestion and document processing.
+- Building a vector-based knowledge base using ChromaDB.
+- Combining semantic and keyword search through hybrid retrieval.
+- Applying Reciprocal Rank Fusion and neural reranking.
+- Implementing persistent conversational memory using SQLite.
+- Building interactive applications using Streamlit.
+- Structuring, testing, and documenting a modular Python project.
+
+---
+
+## License
+
+Choose and add an appropriate open-source license before distributing the project. No license is specified by this README.
+
