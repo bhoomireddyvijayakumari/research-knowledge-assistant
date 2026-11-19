@@ -88,6 +88,42 @@ flowchart TD
     ANSWER --> CLI
 ```
 
+## Application Screenshots
+
+The following screenshots demonstrate the application's document management interface and conversational research capabilities.
+
+### 1. Main Dashboard and Document Management
+
+The Streamlit interface provides PDF uploading, document indexing, and access to the indexed research collection.
+
+![Dashboard](screenshots/dashboard.png)
+
+![Document Management](screenshots/documents.png)
+
+### 2. Conversational Research and Context Retention
+
+The assistant supports multi-turn conversations, allowing users to ask follow-up questions while retaining the context of previous interactions.
+
+**Initial Research Question**
+
+The assistant retrieves information from the indexed Transformer paper and explains the self-attention mechanism, including queries, keys, and values.
+
+![Initial Research Question](screenshots/conversational_memory_01.png)
+
+**Contextual Follow-up**
+
+The user asks about multi-head attention. The assistant provides an explanation grounded in the same research document.
+
+![Contextual Follow-up](screenshots/conversational_memory_02.png)
+
+**Further Contextual Reasoning**
+
+The user refers to the previously discussed scaled dot-product attention mechanism. The assistant uses the conversation context to explain how the concepts relate.
+
+![Multi-turn Contextual Reasoning](screenshots/conversational_memory_03.png)
+
+---
+
 ### Request Lifecycle
 
 1. A user uploads research PDFs through Streamlit or places PDFs in the configured documents directory.
@@ -338,41 +374,7 @@ They do not necessarily exercise every live integration, such as OpenAI API call
 
 ---
 
-## Application Screenshots
 
-The following screenshots demonstrate the application's document management interface and conversational research capabilities.
-
-### 1. Main Dashboard and Document Management
-
-The Streamlit interface provides PDF uploading, document indexing, and access to the indexed research collection.
-
-![Dashboard](screenshots/dashboard.png)
-
-![Document Management](screenshots/documents.png)
-
-### 2. Conversational Research and Context Retention
-
-The assistant supports multi-turn conversations, allowing users to ask follow-up questions while retaining the context of previous interactions.
-
-**Initial Research Question**
-
-The assistant retrieves information from the indexed Transformer paper and explains the self-attention mechanism, including queries, keys, and values.
-
-![Initial Research Question](screenshots/conversational_memory_01.png)
-
-**Contextual Follow-up**
-
-The user asks about multi-head attention. The assistant provides an explanation grounded in the same research document.
-
-![Contextual Follow-up](screenshots/conversational_memory_02.png)
-
-**Further Contextual Reasoning**
-
-The user refers to the previously discussed scaled dot-product attention mechanism. The assistant uses the conversation context to explain how the concepts relate.
-
-![Multi-turn Contextual Reasoning](screenshots/conversational_memory_03.png)
-
----
 
 ## Limitations
 
